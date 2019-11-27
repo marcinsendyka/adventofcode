@@ -24,16 +24,15 @@ public class P3 {
     }
 
     private static void partOne(List<String> input) {
-        Set<Point> points = HashSet.empty();
-        Point currentLocation = new Point(0, 0);
-        points = points.add(currentLocation);
-        List<Function1<Point, Point>> instructions = input
-                .map(P3::moveInstruction).toList();
-        for (int i = 0; i < instructions.size(); i++) {
-            currentLocation = instructions.get(i).apply(currentLocation);
-            points = points.add(currentLocation);
-        }
-        System.out.println(points.size());
+        List<Point> result =
+                input.map(P3::moveInstruction)
+                        .foldLeft(List.of(new Point(0, 0)), P3::appendNextInstruction)
+                        .distinct();
+        System.out.println(result.size());
+    }
+
+    private static List<Point> appendNextInstruction(List<Point> visitedPoints, Function1<Point, Point> nextInstruction) {
+        return visitedPoints.append(nextInstruction.apply(visitedPoints.last()));
     }
 
     private static Function1<Point, Point> moveInstruction(String moveInstruction) {
