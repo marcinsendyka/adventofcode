@@ -18,6 +18,15 @@ public class Functions {
                 .apply(taskInput);
     }
 
+    public static List<String> readInputOneLine(String taskInput) {
+
+         return List.ofAll(readInput(taskInput)
+                .head()
+                .chars()
+                .mapToObj(c -> (char) c)
+                .map(String::valueOf));
+    }
+
     private static Function1<String, Reader> reader() {
         return resourceName -> new InputStreamReader(Functions.class.getResourceAsStream(resourceName));
     }

@@ -10,13 +10,10 @@ import static io.vavr.API.*;
 public class P3 {
     // https://adventofcode.com/2015/day/3
     public static void main(String[] args) {
-        List<String> inputLines = List.ofAll(Functions.readInput("p3/input.txt")
-                .head()
-                .chars()
-                .mapToObj(c -> (char) c))
-                .map(String::valueOf);
-        System.out.println(partOne(inputLines).size());
-        System.out.println(partTwo(inputLines).size());
+        List<String> input = Functions.readInputOneLine("p3/input.txt");
+
+        System.out.println(partOne(input).size());
+        System.out.println(partTwo(input).size());
     }
 
     private static List<Point> partTwo(List<String> input) {
