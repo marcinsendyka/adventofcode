@@ -10,12 +10,16 @@ public class P4 {
     public static void main(String[] args) throws NoSuchAlgorithmException {
         String input = Functions.readInput("p4/input.txt").head();
         MessageDigest md5 = MessageDigest.getInstance("MD5");
-        System.out.println(toHexString(md5.digest("abcdef609043".getBytes())));
+        System.out.println(findPrefix(input, md5, "00000"));
+        System.out.println(findPrefix(input, md5, "000000"));
+    }
+
+    private static int findPrefix(String input, MessageDigest md5, String desiredPrefix) {
         int counter = 0 ;
-        while(!toHexString(md5.digest((input + counter).getBytes())).startsWith("00000")) {
+        while(!toHexString(md5.digest((input + counter).getBytes())).startsWith(desiredPrefix)) {
             counter++;
         }
-        System.out.println(counter);
+        return counter;
     }
 
     public static String toHexString(byte[] bytes) {
