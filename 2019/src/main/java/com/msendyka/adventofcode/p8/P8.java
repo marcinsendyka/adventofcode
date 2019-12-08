@@ -1,12 +1,8 @@
 package com.msendyka.adventofcode.p8;
 
 import com.msendyka.adventofcode.Functions;
-import io.vavr.Tuple2;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
-
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class P8 {
 
@@ -26,17 +22,10 @@ public class P8 {
     }
 
     private static List<Integer> partTwo(List<String> input, int numberOfLayers) {
-        return List.ofAll(IntStream.range(0, numberOfLayers)
-                .mapToObj(layerIndex -> input
-                        .map(Integer::valueOf)
-                        .zipWithIndex()
-                        .filter(tuple -> tuple._2 % numberOfLayers == layerIndex))
-                .map(layersForEachPixel -> layersForEachPixel
-                        .map(Tuple2::_1)
-                        .find(P8::blackOrWhite)
-                        .getOrElse(TRANSPARENT))
-
-                .collect(Collectors.toList()));
+        List<List<Integer>> everyPixel = Functions.splitEvery(input.map(Integer::valueOf), numberOfLayers);
+        return everyPixel.map(layersForEachPixel -> layersForEachPixel
+                .find(P8::blackOrWhite)
+                .getOrElse(TRANSPARENT));
     }
 
     private static boolean blackOrWhite(Integer layerPixel) {
