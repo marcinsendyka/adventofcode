@@ -10,9 +10,9 @@ import java.util.stream.IntStream;
 
 public class P8 {
 
-    public static final int BLACK = 0;
-    public static final int WHITE = 1;
-    public static final int TRANSPARENT = 2;
+    private static final int BLACK = 0;
+    private static final int WHITE = 1;
+    private static final int TRANSPARENT = 2;
 
     public static void main(String[] args) {
         List<String> input = Functions.readInputOneLine("p8/input.txt");
