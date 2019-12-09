@@ -9,24 +9,22 @@ import java.util.Arrays;
 public class P9 {
 
     public static void main(String[] args) {
-        List<String> input = List.ofAll(Arrays.asList(Functions.readInput("p9/test.txt").head().split(",")));
-        for (int i = 0; i < 10000; i++) {
+        List<String> input = List.ofAll(Arrays.asList(Functions.readInput("p9/input.txt").head().split(",")));
+        for (int i = 0; i < 30000; i++) {
             input = input.append("0");
         }
-        OpCode opCode = new OpCode(input, 1);
-        int result = opCode.opcodeCOmputer();
+        OpCode opCode = new OpCode(input, 2);
+        int result = opCode.opcodeComputer();
     }
 
     private static class OpCode {
         List<String> input;
-        int phaseSetting;
-        boolean firstInstructionUsed = false;
-        BigInteger lastOutput = BigInteger.ZERO;
+        BigInteger lastOutput;
         BigInteger relativeBase = BigInteger.ZERO;
 
-        public OpCode(List<String> input, int phaseSetting) {
+        public OpCode(List<String> input, int initialInput) {
             this.input = input;
-            this.phaseSetting = phaseSetting;
+            lastOutput = BigInteger.valueOf(initialInput);
         }
 
         private BigInteger integerValOf(int currentPointer) {
@@ -49,64 +47,41 @@ public class P9 {
             }
         }
 
-        public int opcodeCOmputer() {
+        public int opcodeComputer() {
 
             for (int i = 0; i < input.length(); ) {
                 int toMove = 0;
                 int pointer = integerValOf(i).intValue();
-                int param2Mode = pointer / 1000;
+                int param3Mode = pointer / 1000 / 10;
+                int param2Mode = pointer / 1000 % 10;
                 int param1Mode = (pointer % 1000) / 100;
                 int opcode = pointer % 1000 % 100;
-                if (opcode == 1) {
-                    BigInteger first = integerValOf(i + 1);
-                    BigInteger second = integerValOf(i + 2);
-                    BigInteger param1 = getParam(param1Mode, first);
-                    BigInteger param2 = getParam(param2Mode, second);
+                BigInteger first = integerValOf(i + 1);
+                BigInteger second = integerValOf(i + 2);
+                BigInteger third = integerValOf(i + 3);
+                BigInteger param1 = getParam(param1Mode, first);
+                BigInteger param2 = getParam(param2Mode, second);
 
-                    BigInteger indexToSwitch = integerValOf(i + 3);
-                    input = input
-                            .removeAt(indexToSwitch.intValue())
-                            .insert(indexToSwitch.intValue(), param1.add(param2).toString());
+                if (opcode == 1) {
+                    BigInteger param3 = getParam3(param3Mode, third);
+                    input = replaceElement(param1.add(param2).toString(), param3.intValue());
                     toMove = 4;
                 }
                 if (opcode == 2) {
-                    BigInteger first = integerValOf(i + 1);
-                    BigInteger second = integerValOf(i + 2);
-                    BigInteger param1 = getParam(param1Mode, first);
-                    BigInteger param2 = getParam(param2Mode, second);
-                    Integer indexToSwitch = integerValOf(i + 3).intValue();
-                    input = input
-                            .removeAt(indexToSwitch)
-                            .insert(indexToSwitch, param1.multiply(param2).toString());
+                    BigInteger param3 = getParam3(param3Mode, third);
+                    input = replaceElement(param1.multiply(param2).toString(), param3.intValue());
                     toMove = 4;
-
                 }
                 if (opcode == 3) {
-                    BigInteger first = integerValOf(i + 1);
-                    BigInteger param1 = getParam(param1Mode, first);
-                    BigInteger val = lastOutput;
-                    if (!firstInstructionUsed) {
-                        val = BigInteger.valueOf(phaseSetting);
-                        firstInstructionUsed = true;
-                    }
-                    input = input
-                            .removeAt(param1.intValue())
-                            .insert(param1.intValue(), String.valueOf(val));
+                    input = replaceElement(String.valueOf(lastOutput), getParam3(param1Mode, first).intValue());
                     toMove = 2;
                 }
                 if (opcode == 4) {
-                    BigInteger first = integerValOf(i + 1);
-                    BigInteger param1 = getParam(param1Mode, first);
-                    phaseSetting = param1.intValue();
                     lastOutput = param1;
                     System.out.println(lastOutput);
                     toMove = 2;
                 }
                 if (opcode == 5) {
-                    BigInteger first = integerValOf(i + 1);
-                    BigInteger second = integerValOf(i + 2);
-                    BigInteger param1 = getParam(param1Mode, first);
-                    BigInteger param2 = getParam(param2Mode, second);
                     if (!param1.equals(BigInteger.ZERO)) {
                         i = param2.intValue();
                     } else {
@@ -114,52 +89,34 @@ public class P9 {
                     }
                 }
                 if (opcode == 6) {
-                    BigInteger first = integerValOf(i + 1);
-                    BigInteger second = integerValOf(i + 2);
-                    BigInteger param1 = getParam(param1Mode, first);
-                    BigInteger param2 = getParam(param2Mode, second);
                     if (param1.equals(BigInteger.ZERO)) {
                         i = param2.intValue();
                     } else {
                         toMove = 3;
-
                     }
                 }
                 if (opcode == 7) {
-                    BigInteger first = integerValOf(i + 1);
-                    BigInteger second = integerValOf(i + 2);
-                    BigInteger param1 = getParam(param1Mode, first);
-                    BigInteger param2 = getParam(param2Mode, second);
                     int val = 0;
                     if (param1.compareTo(param2) < 0) {
                         val = 1;
                     }
-                    Integer indexToSwitch = integerValOf(i + 3).intValue();
-                    input = input
-                            .removeAt(indexToSwitch)
-                            .insert(indexToSwitch, String.valueOf(val));
+                    BigInteger param3 = getParam3(param3Mode, third);
+                    input = replaceElement(String.valueOf(val), param3.intValue());
                     toMove = 4;
 
                 }
                 if (opcode == 8) {
-                    BigInteger first = integerValOf(i + 1);
-                    BigInteger second = integerValOf(i + 2);
-                    BigInteger param1 = getParam(param1Mode, first);
-                    BigInteger param2 = getParam(param2Mode, second);
                     int val = 0;
                     if (param1.equals(param2)) {
                         val = 1;
                     }
-                    Integer indexToSwitch = integerValOf(i + 3).intValue();
-                    input = input
-                            .removeAt(indexToSwitch)
-                            .insert(indexToSwitch, String.valueOf(val));
+                    BigInteger param3 = getParam3(param3Mode, third);
+                    input = replaceElement(String.valueOf(val), param3.intValue());
                     toMove = 4;
 
                 }
                 if (opcode == 9) {
-                    BigInteger first = integerValOf(i + 1);
-                    relativeBase = relativeBase.add(first);
+                    relativeBase = relativeBase.add(param1);
                     toMove = 2;
                 }
                 if (opcode == 99) {
@@ -167,7 +124,21 @@ public class P9 {
                 }
                 i = i + toMove;
             }
-            return 0;
+            throw new IllegalStateException();
+        }
+
+        private BigInteger getParam3(int param3Mode, BigInteger third) {
+            if(param3Mode == 2) {
+                return relativeBase.add(third);
+            } else {
+                return third;
+            }
+        }
+
+        private List<String> replaceElement(String element, int i) {
+            return input
+                    .removeAt(i)
+                    .insert(i, element);
         }
 
 

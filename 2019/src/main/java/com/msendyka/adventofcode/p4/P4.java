@@ -8,15 +8,18 @@ import java.util.PrimitiveIterator;
 public class P4 {
 
     public static void main(String[] args) {
-        String[] input = Functions.readInput("p4/input.txt").head().split("-");
+        String[] input = Functions.readInput("input.txt").head().split("-");
         int begin  = Integer.valueOf(input[0]);
         int end  = Integer.valueOf(input[1]);
         int count = 0 ;
-        System.out.println(adjacent(111111));
-        System.out.println(adjacent(112233));
-        System.out.println(adjacent(234444));
-        System.out.println(adjacent(222334));
-        System.out.println(adjacent(111122));
+        System.out.println(adjacent(111122)); // true
+        System.out.println(adjacent(144459)); // false
+        System.out.println(adjacent(677778)); // false
+        System.out.println(adjacent(137778)); // false
+        System.out.println(adjacent(111111)); //false
+        System.out.println(adjacent(112233)); //true
+        System.out.println(adjacent(234444)); //false
+        System.out.println(adjacent(222334)); //true
         for (int i = begin; i < end; i++) {
             boolean twoAdjacent = adjacent(i);
             int prev;
@@ -27,8 +30,8 @@ public class P4 {
             while(iterator1.hasNext()) {
                 int a = iterator1.next();
                 if(prev > a) {
-                   satisfied = false;
-                   break;
+                    satisfied = false;
+                    break;
                 }
                 prev = a;
             }
@@ -46,46 +49,31 @@ public class P4 {
 
     private static boolean adjacent(int i) {
         boolean twoAdjacent = false;
-        PrimitiveIterator.OfInt iterator = String.valueOf(i).chars().iterator();
+        char[] chars = String.valueOf(i).toCharArray();
 
-//        int prev = iterator.next();
-//        int prev2 = -1;
-//        while(iterator.hasNext()) {
-//            int a = iterator.next();
-//            if(a != prev && prev == prev2) {
-//                twoAdjacent = true;
-//                break;
-//            }
-//            prev2 = prev;
-//            prev = a;
-//            if(a == prev && prev == prev2) {
-//                if(iterator.hasNext() ){
-//                    iterator.next();
-//                }
-//            }
-//        }
-//
-//        return twoAdjacent;
-        int size = List.ofAll(String.valueOf(i).chars().mapToObj(Integer::new))
-                .sliding(3, 1)
-                .filter(l -> l.size() == 3 && l.distinct().size() != 1)
-                .filter(l -> l.size() == 3 && l.distinct().size() == 2)
-                .size();
+        for (int j = 0; j < chars.length - 2; j++) {
 
-//        List<Integer> integers = List.ofAll(String.valueOf(i).chars().mapToObj(Integer::new));
-//        for (int j = 0; j < integers.size() - 2; j+=2) {
-//            if(
-//                    ((j == 0) || (integers.get(j - 1).intValue() != integers.get(j).intValue()))
-//                            && integers.get(j).intValue() == integers.get(j + 1).intValue() && integers.get(j + 1).intValue() != integers.get(j+2).intValue()) {
-//                return true;
-//            }
-//        }
-//        if(integers.last().intValue() ==  integers.get(integers.size() - 2).intValue() && integers.get(integers.size() - 2).intValue() != integers.get(integers.size() - 3).intValue()) {
-//            return true;
-//        }
-//
-//        return false;
-       return size > 0;
+            char first = chars[j];
+            char second = chars[j+1];
+            char third = chars[j+2];
+            if(first == second && second != third) {
+                twoAdjacent = true;
+                break;
+            }
+            if(first == second && second ==  third) {
+                for (int k = j; k < chars.length; k++) {
+                    if(chars[k] != first) {
+                        j = k-1;
+                        break;
+                    }
+                }
+            }
+
+        }
+        if(chars[chars.length -1 ] == chars[chars.length -2 ] && chars[chars.length -2 ] != chars[chars.length -3 ]) {
+            return true;
+        }
+        return twoAdjacent;
 
     }
 }
