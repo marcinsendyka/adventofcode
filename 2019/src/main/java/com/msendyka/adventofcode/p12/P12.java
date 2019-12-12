@@ -1,10 +1,13 @@
 package com.msendyka.adventofcode.p12;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import com.msendyka.adventofcode.Functions;
+
 import io.vavr.collection.List;
 import io.vavr.control.Option;
-
-import java.util.Objects;
 
 public class P12 {
 
@@ -13,24 +16,61 @@ public class P12 {
     public static void main(String[] args) {
         partOne();
 
+        Map<Integer, Integer> xmap = new HashMap<>();
+        Map<Integer, Integer> ymap = new HashMap<>();
+        Map<Integer, Integer> zmap = new HashMap<>();
         List<Moon> moons = Functions.readInput(INPUT)
                 .map(string -> string.split(","))
                 .map(strings -> findMoon(strings));
-
         Number initial = moons.map(moon -> moon.energy())
                 .sum();
+        Number initialKinetic = moons.map(moon -> moon.kinetic())
+                .sum();
+        Number initialPotential = moons.map(moon -> moon.potential())
+                .sum();
         long count = 0;
+
+        System.out.println(initialKinetic);
+        System.out.println(initialPotential);
+
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        int once = 0;
+        int maxSum = 0 ;
         while(true) {
             count++;
             updateGravity2(moons);
             updatePositions(moons);
             Number sum = moons.map(moon -> moon.energy())
                     .sum();
+//            System.out.println("\tcount:"+count);
+//            System.out.println("\tenergy:"+sum);
+//            System.out.println("\tkineticSum"+moons.map(moon -> moon.kinetic()).sum());
+//            moons.forEach(m -> System.out.println("\t\t" + m.kinetic()));
+//            System.out.println("\tpotentialSum"+moons.map(moon -> moon.potential()).sum());
+//            moons.forEach(m -> System.out.println("\t\t" + m.potential()));
+//            if(sum.intValue() > maxSum) {
+//                maxSum = sum.intValue();
+//            }
+//            if(xmap.containsKey(sum)) {
+//                xmap.put(sum.intValue(), xmap.get(sum).intValue() + 1);
+//            } else {
+//                xmap.put(sum.intValue(), 1);
+//            }
+            int kineticSum = moons.map(moon -> moon.kinetic()).sum().intValue();
+            int potentialSum = moons.map(moon -> moon.potential()).sum().intValue();
+//            if(potentialSum)
             if(sum.equals(initial)) {
+
                 break;
             }
         }
+
+        System.out.println(xmap);
+        System.out.println(xmap.size());
         System.out.println(count);
+        System.out.println(maxSum);
     }
 
     private static void updatePositions(List<Moon> moons) {
@@ -141,9 +181,17 @@ public class P12 {
         }
 
         public int energy() {
-            int potential = Math.abs(x) + Math.abs(y) +Math.abs(z);
-            int kinetic = Math.abs(velocityX) + Math.abs(velocityY) +Math.abs(velocityZ);
+            int potential = potential();
+            int kinetic = kinetic();
             return potential * kinetic;
+        }
+
+        private int kinetic() {
+            return Math.abs(velocityX) + Math.abs(velocityY) +Math.abs(velocityZ);
+        }
+
+        private int potential() {
+            return Math.abs(x) + Math.abs(y) + Math.abs(z);
         }
 
         @Override
