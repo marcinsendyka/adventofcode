@@ -29,7 +29,7 @@ public class P16 {
             previousPhase = processPhase(phase, previousPhase, phaseLenght, resultOffset, arrayTemp);
         }
         System.out.println(previousPhase);
-        System.out.println(previousPhase.substring(resultOffset, (resultOffset + 7)));
+        System.out.println(previousPhase.substring(resultOffset, (resultOffset + 8)));
     }
 
     private static String processPhase(List<Integer> phase,
