@@ -1,6 +1,7 @@
 package com.msendyka.adventofcode.p16;
 
 import com.msendyka.adventofcode.Functions;
+
 import io.vavr.collection.List;
 
 public class P16 {
@@ -11,7 +12,7 @@ public class P16 {
 
         part1();
         List<Integer> phase = List.of(1, 1, -1, -1);
-        List<String> input = Functions.readInput("p16/test.txt");
+        List<String> input = Functions.readInput("p16/input.txt");
         System.out.println(input);
 
         String previousPhase = input.head();
@@ -23,25 +24,25 @@ public class P16 {
         Integer resultOffset = Integer.valueOf(previousPhase.substring(0, 7));
         System.out.println(resultOffset);
         int phaseLenght = previousPhase.length();
+        char[] fft = previousPhase.toCharArray();
         int[] arrayTemp = new int[phaseLenght - resultOffset];
         for (int k = 0; k < 100; k++) {
             System.out.println(k);
-            previousPhase = processPhase(phase, previousPhase, phaseLenght, resultOffset, arrayTemp);
+            fft = processPhase(phase, phaseLenght, resultOffset, arrayTemp, fft);
         }
-        System.out.println(previousPhase);
-        System.out.println(previousPhase.substring(resultOffset, (resultOffset + 8)));
+        System.out.println(fft);
+        System.out.println(new String(fft).substring(0 +resultOffset, 8 + resultOffset));
     }
 
-    private static String processPhase(List<Integer> phase,
-                                       String previousPhase,
+    private static char[] processPhase(List<Integer> phase,
                                        int phaseLenght,
                                        Integer resultOffset,
-                                       int[] arrayTemp) {
+                                       int[] arrayTemp, char[] fft) {
 
         int sum = 0;
         for (int j = phaseLenght - 1; j >= resultOffset; j--) {
             int offsetMultiplier = j + 1;
-            sum += Character.getNumericValue(previousPhase.charAt(j % previousPhase.length()));
+            sum += Character.getNumericValue(fft[j]);
             arrayTemp[j - resultOffset] = sum;
             int accum = sum;
             int k = 2;
@@ -49,11 +50,9 @@ public class P16 {
                 accum += arrayTemp[(k * offsetMultiplier - 1 - resultOffset)] * phase.get(k % 4);
                 k += 1;
             }
-            char[] chars = previousPhase.toCharArray();
-            chars[j % previousPhase.length()] = String.valueOf(Math.abs(accum % 10)).toCharArray()[0];
-            previousPhase = String.valueOf(chars);
+            fft[j] = String.valueOf(Math.abs(accum % 10)).toCharArray()[0];
         }
-        return previousPhase;
+        return fft;
     }
 
     private static int processPhaseStep(String previousPhase, List<Integer> offsetList, int offsetMultiplier, int phaseResult, int i) {
@@ -67,13 +66,15 @@ public class P16 {
         List<String> input = Functions.readInput("p16/input.txt");
         System.out.println(input);
         String previousPhase = input.head();
+        char[] fft = previousPhase.toCharArray();
+
         int[] arrayTemp = new int[previousPhase.length()];
 
         for (int k = 0; k < 100; k++) {
-            previousPhase = processPhase(phase, previousPhase, previousPhase.length(), 0, arrayTemp);
+            fft = processPhase(phase, previousPhase.length(), 0, arrayTemp, fft);
         }
-        System.out.println(previousPhase);
-        System.out.println(previousPhase.substring(0, 8));
+        System.out.println(fft);
+        System.out.println(new String(fft).substring(0, 8));
     }
 
 }

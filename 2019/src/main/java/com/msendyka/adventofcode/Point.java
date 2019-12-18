@@ -11,6 +11,10 @@ public class Point {
         this.y = y;
     }
 
+    public int manhattanDistance(Point other) {
+        return Math.abs(x - other.x) + Math.abs(y - other.y);
+    }
+
     @Override
     public String toString() {
         return "Point{" +
