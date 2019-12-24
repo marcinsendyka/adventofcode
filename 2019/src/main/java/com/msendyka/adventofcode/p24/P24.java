@@ -12,8 +12,9 @@ import java.util.stream.Collectors;
 
 public class P24 {
 
-    public static final int MINUTES = 200;
-    public static final int LEVELS_COUNT = 200;
+    private static final int MINUTES = 200;
+    private static final int LEVELS_COUNT = 200;
+    private static final int GRID_SIZE = 5;
 
     public static void main(String[] args) {
 
@@ -46,10 +47,10 @@ public class P24 {
             for (int j = LEVELS_COUNT; j > -LEVELS_COUNT; j--) {
                 Set<Point> pointsAbove = levels.get(j + 1);
                 Set<Point> pointsBelow = levels.get(j - 1);
-                if(pointsAbove == null) {
+                if (pointsAbove == null) {
                     pointsAbove = new HashSet<>();
                 }
-                if(pointsBelow == null) {
+                if (pointsBelow == null) {
                     pointsBelow = new HashSet<>();
                 }
                 Set<Point> itResult = iterationPart2(levels.get(j), pointsAbove, pointsBelow);
@@ -59,7 +60,7 @@ public class P24 {
                 levels.put(j, iterationResults.get(j));
             }
         }
-        long pointCount = levels.values().stream().flatMap(Set::stream).count();
+        long pointCount = levels.values().stream().mapToLong(Set::size).sum();
         System.out.println(pointCount);
 
     }
@@ -69,23 +70,22 @@ public class P24 {
         Set<Point> toInfest = new HashSet<>();
         findToDiePart2(points, toDie, pointsAbove, pointsBelow);
         adjacent2(points, toInfest, pointsAbove, pointsBelow);
-        if(toInfest.contains(new Point(2,2))) {
+        if (toInfest.contains(new Point(2, 2))) {
             throw new IllegalStateException();
         }
-        Set<Point> result = new HashSet<>();
-        result.addAll(points);
+        Set<Point> result = new HashSet<>(points);
         result.removeAll(toDie);
         result.addAll(toInfest);
         return result;
     }
 
     private static void adjacent2(Set<Point> points, Set<Point> toInfest, Set<Point> pointsAbove, Set<Point> pointsBelow) {
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
                 Point point = new Point(i, j);
                 if (!points.contains(point)) {
                     int adjacent = countAdjacent2(points, point, pointsAbove, pointsBelow);
-                    if ((adjacent == 1 || adjacent == 2) && (point.x != 2 || point.y != 2 )) {
+                    if ((adjacent == 1 || adjacent == 2) && (point.x != 2 || point.y != 2)) {
                         toInfest.add(point);
                     }
 
@@ -93,6 +93,7 @@ public class P24 {
             }
         }
     }
+
     private static void findToDiePart2(Set<Point> points, Set<Point> toDie, Set<Point> pointsAbove, Set<Point> pointsBelow) {
         for (Point point : points) {
             int adjacent = countAdjacent2(points, point, pointsAbove, pointsBelow);
@@ -139,23 +140,23 @@ public class P24 {
             Set<Point> recursivePoints = pointsBelow.stream().filter(p -> p.y == 0).collect(Collectors.toSet());
             adjacent += recursivePoints.size();
         }
-        if(left.x == -1) {
-            if(pointsAbove.contains(new Point(1, 2))) {
+        if (left.x == -1) {
+            if (pointsAbove.contains(new Point(1, 2))) {
                 adjacent++;
             }
         }
-        if(right.x == 5) {
-            if(pointsAbove.contains(new Point(3, 2))) {
+        if (right.x == GRID_SIZE) {
+            if (pointsAbove.contains(new Point(3, 2))) {
                 adjacent++;
             }
         }
-        if(up.y == 5) {
-            if(pointsAbove.contains(new Point(2, 3))) {
+        if (up.y == GRID_SIZE) {
+            if (pointsAbove.contains(new Point(2, 3))) {
                 adjacent++;
             }
         }
-        if(down.y == -1) {
-            if(pointsAbove.contains(new Point(2, 1))) {
+        if (down.y == -1) {
+            if (pointsAbove.contains(new Point(2, 1))) {
                 adjacent++;
             }
         }
@@ -164,8 +165,8 @@ public class P24 {
     }
 
     private static void adjacent(Set<Point> points, Set<Point> toInfest) {
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
                 Point point = new Point(i, j);
                 if (!points.contains(point)) {
                     int adjacent = countAdjacent(points, point);
@@ -195,7 +196,7 @@ public class P24 {
             x = 0;
         }
         System.out.println(points);
-        visualiseInitialInput(points, 5, 5);
+        visualiseInitialInput(points);
         Set<Set<Point>> results = new HashSet<>();
         while (true) {
             Set<Point> iterationResult = iteration(points);
@@ -209,11 +210,10 @@ public class P24 {
 
         }
         System.out.println();
-        visualiseInitialInput(points, 5, 5);
+        visualiseInitialInput(points);
         long result = 0;
         for (Point point : points) {
-            int ratingPower = 0;
-            ratingPower = point.x + point.y * 5;
+            int ratingPower = point.x + point.y * GRID_SIZE;
             double pow = Math.pow(2, ratingPower);
             result += pow;
         }
@@ -225,8 +225,7 @@ public class P24 {
         Set<Point> toInfest = new HashSet<>();
         findToDie(points, toDie);
         adjacent(points, toInfest);
-        Set<Point> result = new HashSet<>();
-        result.addAll(points);
+        Set<Point> result = new HashSet<>(points);
         result.removeAll(toDie);
         result.addAll(toInfest);
         return result;
@@ -258,16 +257,16 @@ public class P24 {
         return adjacent;
     }
 
-    private static void visualiseInitialInput(Set<Point> bugs, int width, int height) {
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+    private static void visualiseInitialInput(Set<Point> bugs) {
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
                 if (bugs.contains(new Point(j, i))) {
                     System.out.print("# ");
                 } else {
                     System.out.print(". ");
                 }
             }
-            System.out.println("");
+            System.out.println();
         }
     }
 }
