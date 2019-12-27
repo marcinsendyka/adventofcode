@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-public class Functions {
+public class Functions2015 {
 
     public static List<String> readInput(String taskInput) {
 
@@ -28,7 +28,7 @@ public class Functions {
     }
 
     private static Function1<String, Reader> reader() {
-        return resourceName -> new InputStreamReader(Functions.class.getResourceAsStream(resourceName));
+        return resourceName -> new InputStreamReader(Functions2015.class.getResourceAsStream(resourceName));
     }
 
 

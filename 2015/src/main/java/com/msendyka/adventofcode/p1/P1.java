@@ -1,13 +1,13 @@
 package com.msendyka.adventofcode.p1;
 
-import com.msendyka.adventofcode.Functions;
+import com.msendyka.adventofcode.Functions2015;
 import io.vavr.Function2;
 import io.vavr.collection.List;
 
 public class P1 {
     // https://adventofcode.com/2015/day/1
     public static void main(String[] args) {
-        List<String> input = Functions.readInputOneLine("p1/input.txt");
+        List<String> input = Functions2015.readInputOneLine("p1/input.txt");
 
         partOne(input);
         partTwo(input);

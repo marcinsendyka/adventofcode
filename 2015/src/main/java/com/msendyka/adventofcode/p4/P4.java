@@ -1,6 +1,6 @@
 package com.msendyka.adventofcode.p4;
 
-import com.msendyka.adventofcode.Functions;
+import com.msendyka.adventofcode.Functions2015;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 public class P4 {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        String input = Functions.readInput("p4/input.txt").head();
+        String input = Functions2015.readInput("p4/input.txt").head();
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         System.out.println(findPrefix(input, md5, "00000"));
         System.out.println(findPrefix(input, md5, "000000"));
