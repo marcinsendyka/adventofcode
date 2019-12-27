@@ -1,6 +1,6 @@
 package com.msendyka.adventofcode.p2;
 
-import com.msendyka.adventofcode.Functions;
+import com.msendyka.adventofcode.Functions2015;
 import io.vavr.Tuple3;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
@@ -9,7 +9,7 @@ public class P2 {
 
     // https://adventofcode.com/2015/day/2
     public static void main(String[] args) {
-        List<String> inputLines = Functions.readInput("p2/input.txt");
+        List<String> inputLines = Functions2015.readInput("p2/input.txt");
         partOne(inputLines);
         partTwo(inputLines);
     }
