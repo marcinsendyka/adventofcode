@@ -23,10 +23,10 @@ public class P23 {
         }
 
         long[] program = new long[strings.size()];
-        Map<Long, java.util.List<Long>> queues = new HashMap<>();
         for (int i = 0; i < strings.size(); i++) {
             program[i] = Long.valueOf(strings.get(i));
         }
+        Map<Long, java.util.List<Long>> queues = new HashMap<>();
         Map<Long, java.util.List<Long>> states = new HashMap<>();
         java.util.List<OpCode> computers = new ArrayList<>();
         for (int i = 0; i < 256; i++) {
