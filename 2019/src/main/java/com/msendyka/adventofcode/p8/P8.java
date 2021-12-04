@@ -11,7 +11,7 @@ public class P8 {
     private static final int TRANSPARENT = 2;
 
     public static void main(String[] args) {
-        List<String> input = Functions.readInputOneLine("p8/input.txt");
+        List<String> input = Functions.readInputOneLineChars("p8/input.txt");
 
         int width = 25;
         int height = 6;

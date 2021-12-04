@@ -1,24 +1,21 @@
 package com.msendyka.adventofcode.p12;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import com.msendyka.adventofcode.Functions;
-
+import io.vavr.Tuple3;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Objects;
+
 public class P12 {
 
-    public static final String INPUT = "p12/test.txt";
+    public static final String INPUT = "p12/input.txt";
 
     public static void main(String[] args) {
         partOne();
 
-        Map<Integer, Integer> xmap = new HashMap<>();
-        Map<Integer, Integer> ymap = new HashMap<>();
-        Map<Integer, Integer> zmap = new HashMap<>();
         List<Moon> moons = Functions.readInput(INPUT)
                 .map(string -> string.split(","))
                 .map(strings -> findMoon(strings));
@@ -30,61 +27,81 @@ public class P12 {
                 .sum();
         long count = 0;
 
-        System.out.println(initialKinetic);
-        System.out.println(initialPotential);
+        System.out.println("\t" + initialKinetic);
+        moons.forEach(m -> System.out.println("\t\t" + m.kinetic()));
+        System.out.println("\t" + initialPotential);
+        moons.forEach(m -> System.out.println("\t\t" + m.potential()));
 
         System.out.println();
         System.out.println();
         System.out.println();
-        int once = 0;
-        int maxSum = 0 ;
-        while(true) {
+        java.util.List<Long> cycles = new ArrayList<>();
+        java.util.Set<Integer> indices = new HashSet<>();
+        List<Tuple3> initials = moons.map(moon -> new Tuple3(moon.x, moon.y, moon.z));
+        List<Integer> ixes = moons.map(moon -> moon.x);
+        List<Integer> yes = moons.map(moon -> moon.y);
+        List<Integer> zes = moons.map(moon -> moon.z);
+        boolean x= false;
+        boolean y= false;
+        boolean z= false;
+        int maxSum = 0;
+        while (count < 100000000) {
             count++;
             updateGravity2(moons);
             updatePositions(moons);
             Number sum = moons.map(moon -> moon.energy())
                     .sum();
-//            System.out.println("\tcount:"+count);
-//            System.out.println("\tenergy:"+sum);
-//            System.out.println("\tkineticSum"+moons.map(moon -> moon.kinetic()).sum());
-//            moons.forEach(m -> System.out.println("\t\t" + m.kinetic()));
-//            System.out.println("\tpotentialSum"+moons.map(moon -> moon.potential()).sum());
-//            moons.forEach(m -> System.out.println("\t\t" + m.potential()));
-//            if(sum.intValue() > maxSum) {
-//                maxSum = sum.intValue();
+            List<Tuple3> currentMoons = moons.map(moon -> new Tuple3(moon.x, moon.y, moon.z));
+//            for (int i = 0; i < currentMoons.length(); i++) {
+//                if (initials.get(i).equals(currentMoons.get(i))) {
+//                    if (!indices.contains(i)) {
+//                        cycles.add(count);
+//                        indices.add(i);
+//                    }
+//
+//                }
 //            }
-//            if(xmap.containsKey(sum)) {
-//                xmap.put(sum.intValue(), xmap.get(sum).intValue() + 1);
-//            } else {
-//                xmap.put(sum.intValue(), 1);
-//            }
-            int kineticSum = moons.map(moon -> moon.kinetic()).sum().intValue();
-            int potentialSum = moons.map(moon -> moon.potential()).sum().intValue();
-//            if(potentialSum)
-            if(sum.equals(initial)) {
-
-                break;
+            if(moons.map(moon -> moon.x).equals(ixes)) {
+                System.out.println("x");
+                System.out.println(count);
+                x = true;
             }
-        }
+            if(moons.map(moon -> moon.y).equals(yes)) {
+                System.out.println("y");
+                System.out.println(count);
+                y =true;
 
-        System.out.println(xmap);
-        System.out.println(xmap.size());
+            }
+            if(moons.map(moon -> moon.z).equals(zes)) {
+                System.out.println("z");
+                System.out.println(count);
+                z = true;
+
+            }
+            if ( x &&y&&z) break;
+//            if (indices.size() >= 4) {
+//
+//                break;
+//            }
+        }
+        System.out.println(cycles);
         System.out.println(count);
         System.out.println(maxSum);
     }
 
     private static void updatePositions(List<Moon> moons) {
-        for (Moon m: moons) {
+        for (Moon m : moons) {
             m.x += m.velocityX;
             m.y += m.velocityY;
             m.z += m.velocityZ;
         }
     }
+
     private static void updateGravity2(List<Moon> moons) {
         int length = moons.length();
         List<Moon> byX = moons.sortBy(a -> a.x);
-        List<Moon> byY= moons.sortBy(a -> a.y);
-        List<Moon> byZ= moons.sortBy(a -> a.z);
+        List<Moon> byY = moons.sortBy(a -> a.y);
+        List<Moon> byZ = moons.sortBy(a -> a.z);
         moons.forEach(
                 moon -> {
                     int indexX = byX.indexOf(moon);
@@ -118,20 +135,20 @@ public class P12 {
         for (Moon m : moons) {
             for (Moon m2 : moons) {
                 if (m == m2) continue;
-                if(m.x > m2.x) {
-                    m.velocityX -=1;
+                if (m.x > m2.x) {
+                    m.velocityX -= 1;
                 } else if (m.x < m2.x) {
-                    m.velocityX +=1;
+                    m.velocityX += 1;
                 }
-                if(m.y > m2.y) {
-                    m.velocityY -=1;
+                if (m.y > m2.y) {
+                    m.velocityY -= 1;
                 } else if (m.y < m2.y) {
-                    m.velocityY +=1;
+                    m.velocityY += 1;
                 }
-                if(m.z > m2.z) {
-                    m.velocityZ -=1;
+                if (m.z > m2.z) {
+                    m.velocityZ -= 1;
                 } else if (m.z < m2.z) {
-                    m.velocityZ +=1;
+                    m.velocityZ += 1;
                 }
             }
         }
@@ -187,7 +204,7 @@ public class P12 {
         }
 
         private int kinetic() {
-            return Math.abs(velocityX) + Math.abs(velocityY) +Math.abs(velocityZ);
+            return Math.abs(velocityX) + Math.abs(velocityY) + Math.abs(velocityZ);
         }
 
         private int potential() {

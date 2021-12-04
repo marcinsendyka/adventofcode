@@ -20,7 +20,7 @@ public class Functions {
                 .apply(taskInput);
     }
 
-    public static List<String> readInputOneLine(String taskInput) {
+    public static List<String> readInputOneLineChars(String taskInput) {
 
         return List.ofAll(readInput(taskInput)
                 .head()
@@ -29,7 +29,11 @@ public class Functions {
                 .map(String::valueOf));
     }
 
-    public static <T> List<List<T>>  splitEvery(List<T> list, int every) {
+    public static String[] readInputOneLine(String taskInput) {
+        return Functions.readInput(taskInput).head().split(",");
+    }
+
+    public static <T> List<List<T>> splitEvery(List<T> list, int every) {
         return
                 List.ofAll(
                         IntStream.range(0, every)
@@ -47,4 +51,11 @@ public class Functions {
     }
 
 
+    public static long[] stringArrayToLongArray(String[] strings) {
+        long[] arr = new long[strings.length];
+        for (int j = 0; j < arr.length; j++) {
+            arr[j] = Long.valueOf(strings[j]);
+        }
+        return arr;
+    }
 }
